@@ -7,11 +7,11 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/stomachButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
-        android:onClick="measureStomach"
+        android:onClick="measure"
         android:text="@string/measure_button"
         android:textAllCaps="false"
         android:textSize="18sp"
