@@ -27,11 +27,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        if (!checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
-            requestPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-        }
-        if (!checkPermission(Manifest.permission.BODY_SENSORS)) {
-            requestPermission(Manifest.permission.BODY_SENSORS)
+        if (!checkPermissions(arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.BODY_SENSORS))) {
+            requestPermissions(arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.BODY_SENSORS))
         }
         val gso: GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
@@ -76,14 +77,23 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(measureStomachIntent, MEASURE_REQUEST_CODE)
     }
 
-    private fun checkPermission(permission: String):Boolean {
-        val permissionState = ActivityCompat.checkSelfPermission(this, permission)
-        Log.d(permission, permissionState.toString())
-        return permissionState == PackageManager.PERMISSION_GRANTED
+    private fun checkPermissions(permissions: Array<String>):Boolean {
+        var permissionsAccepted = true
+        for (permission in permissions) {
+            val permissionState = ActivityCompat.checkSelfPermission(this, permission)
+            Log.d(permission, permissionState.toString())
+            permissionsAccepted = permissionsAccepted && permissionState == PackageManager.PERMISSION_GRANTED
+        }
+        return permissionsAccepted
     }
 
-    private fun requestPermission(permission: String) {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+    private fun requestPermissions(permissions: Array<String>) {
+        var needRationale = false
+        for (permission in permissions) {
+            needRationale = needRationale ||
+                    ActivityCompat.shouldShowRequestPermissionRationale(this, permission)
+        }
+        if (needRationale) {
             Log.i("missing Permissions", "showing request permission rationale")
             val view: View? = findViewById(android.R.id.content)
             if (view != null) {
@@ -93,14 +103,11 @@ class MainActivity : AppCompatActivity() {
                 ).setAction(
                     R.string.ok
                 ) {
-                    ActivityCompat.requestPermissions(
-                        this, arrayOf(permission),
-                        REQUEST_PERMISSIONS_REQUEST_CODE
-                    )
+                    ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSIONS_REQUEST_CODE)
                 }.show()
             }
         } else {
-            ActivityCompat.requestPermissions(this, arrayOf(permission), REQUEST_PERMISSIONS_REQUEST_CODE)
+            ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSIONS_REQUEST_CODE)
         }
     }
 
