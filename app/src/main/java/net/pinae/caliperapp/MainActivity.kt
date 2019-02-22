@@ -4,11 +4,15 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.util.Log
 import android.support.design.widget.Snackbar
+import android.support.v4.app.ActivityCompat.startActivityForResult
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
 import android.view.View
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -18,10 +22,10 @@ import com.google.android.gms.common.Scopes
 import com.google.android.gms.common.api.Scope
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.common.api.ApiException
+import kotlinx.android.synthetic.main.activity_main.*
 
 
-
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MainFragment.OnMainFragmentInteractionListener {
     private var client: GoogleSignInClient? = null
     private var account: GoogleSignInAccount? = null
 
@@ -48,6 +52,7 @@ class MainActivity : AppCompatActivity() {
             Log.d("GoogleAccount", getGoogleAccount().toString())
             signIn()
         }
+        updateUI(account)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -70,10 +75,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateUI(account: GoogleSignInAccount?) {
+        val frameId = R.id.baseLayout
         if (account == null) {
-            replaceFragment(NotLoggedInFragment.newInstance(), R.id.fragment)
+            setFragment(NotLoggedInFragment.newInstance(), frameId)
         } else {
-            replaceFragment(MainFragment.newInstance("a", "b"), R.id.fragment)
+            setFragment(MainFragment.newInstance("a", "b"), frameId)
+        }
+    }
+
+    private fun setFragment(fragment: Fragment, frameId: Int) {
+        if (supportFragmentManager.fragments.isEmpty()) {
+            addFragment(fragment, frameId)
+        } else {
+            replaceFragment(fragment, frameId)
         }
     }
 
@@ -133,5 +147,9 @@ class MainActivity : AppCompatActivity() {
     private fun getGoogleAccount():GoogleSignInAccount? {
         if (account == null) account = GoogleSignIn.getLastSignedInAccount(this)
         return account
+    }
+
+    override fun onFragmentInteraction(uri: Uri) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
