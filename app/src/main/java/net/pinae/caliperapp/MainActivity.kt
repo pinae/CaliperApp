@@ -17,12 +17,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.Scopes
 import com.google.android.gms.common.api.Scope
 import com.google.android.gms.tasks.Task
+import com.google.android.gms.common.api.ApiException
+
+
 
 class MainActivity : AppCompatActivity() {
-    val REQUEST_PERMISSIONS_REQUEST_CODE = 34
-    val REQUEST_SIGN_IN_REQUEST_CODE = 9001
-    val MEASURE_REQUEST_CODE = 213
-    var client: GoogleSignInClient? = null
+    private var client: GoogleSignInClient? = null
+    private var account: GoogleSignInAccount? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,21 +44,22 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val account = GoogleSignIn.getLastSignedInAccount(this)
-        if (account == null) {
+        if (getGoogleAccount() == null) {
+            Log.d("GoogleAccount", getGoogleAccount().toString())
             signIn()
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_SIGN_IN_REQUEST_CODE) {
+        if (requestCode == SIGN_IN_REQUEST_CODE) {
             val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
-            if (task.isSuccessful()) {
-                val account: GoogleSignInAccount? = task.getResult()
+            handleSignInResult(task)
+            /*if (task.isSuccessful) {
+                account = task.result
             } else {
                 Log.i("Login failed", "try again")
-            }
+            }*/
         } else if (requestCode == MEASURE_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK && data != null && data.data != null &&
                 data.hasExtra("MEASUREMENT_POSITION")) {
@@ -67,14 +69,27 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun measure(view: View) {
-        val measureStomachIntent = Intent(this, MeasureActivity::class.java)
-        when (view) {
-            findViewById<View>(R.id.stomachButton) -> {
-                measureStomachIntent.putExtra("MEASUREMENT_POSITION", "STOMACH")
-            }
+    private fun updateUI(account: GoogleSignInAccount?) {
+        if (account == null) {
+            replaceFragment(NotLoggedInFragment.newInstance(), R.id.fragment)
+        } else {
+            replaceFragment(MainFragment.newInstance("a", "b"), R.id.fragment)
         }
-        startActivityForResult(measureStomachIntent, MEASURE_REQUEST_CODE)
+    }
+
+    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
+        try {
+            val account = completedTask.getResult(ApiException::class.java)
+
+            // Signed in successfully, show authenticated UI.
+            updateUI(account)
+        } catch (e: ApiException) {
+            // The ApiException status code indicates the detailed failure reason.
+            // Please refer to the GoogleSignInStatusCodes class reference for more information.
+            Log.w("MainActivity", "signInResult:failed code=" + e.statusCode)
+            updateUI(null)
+        }
+
     }
 
     private fun checkPermissions(permissions: Array<String>):Boolean {
@@ -103,15 +118,20 @@ class MainActivity : AppCompatActivity() {
                 ).setAction(
                     R.string.ok
                 ) {
-                    ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSIONS_REQUEST_CODE)
+                    ActivityCompat.requestPermissions(this, permissions, PERMISSIONS_REQUEST_CODE)
                 }.show()
             }
         } else {
-            ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSIONS_REQUEST_CODE)
+            ActivityCompat.requestPermissions(this, permissions, PERMISSIONS_REQUEST_CODE)
         }
     }
 
     private fun signIn() {
-        startActivityForResult(client!!.signInIntent, REQUEST_SIGN_IN_REQUEST_CODE)
+        startActivityForResult(client!!.signInIntent, SIGN_IN_REQUEST_CODE)
+    }
+
+    private fun getGoogleAccount():GoogleSignInAccount? {
+        if (account == null) account = GoogleSignIn.getLastSignedInAccount(this)
+        return account
     }
 }

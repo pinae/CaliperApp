@@ -3,6 +3,9 @@
     <string name="measure_button">Measure</string>
     <string name="thickness_input_hint">thickness in mm</string>
     <string name="save_measurement_button">Save measurement</string>
-    <string name="permission_rationale">Without the permission for the location and access to body sensors the app will be unable to connect to Google Fit.</string>
+    <string name="permission_rationale">Without the permission for the location and access to body sensors the app will
+        be unable to connect to Google Fit.</string>
     <string name="ok">OK</string>
+    <string name="you_need_to_log_in">You need to log into a Google account to use this app. It depends on the fitness
+        store from the Google Fit API.</string>
 </resources>
