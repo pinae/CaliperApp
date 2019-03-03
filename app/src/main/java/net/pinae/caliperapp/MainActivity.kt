@@ -10,19 +10,13 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.util.Log
 import android.support.design.widget.Snackbar
-import android.support.v4.app.ActivityCompat.startActivityForResult
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
 import android.view.View
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.signin.*
 import com.google.android.gms.common.Scopes
 import com.google.android.gms.common.api.Scope
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.common.api.ApiException
-import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity(), MainFragment.OnMainFragmentInteractionListener {
@@ -32,16 +26,17 @@ class MainActivity : AppCompatActivity(), MainFragment.OnMainFragmentInteraction
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        if (!checkPermissions(arrayOf(
+        if (!checkAppPermissions(arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.BODY_SENSORS))) {
-            requestPermissions(arrayOf(
+            requestAppPermissions(arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.BODY_SENSORS))
         }
         val gso: GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
             .requestScopes(Scope(Scopes.FITNESS_BODY_READ_WRITE))
+            .requestScopes(Scope(Scopes.PROFILE))
             .build()
         client = GoogleSignIn.getClient(this, gso)
     }
@@ -60,17 +55,14 @@ class MainActivity : AppCompatActivity(), MainFragment.OnMainFragmentInteraction
         if (requestCode == SIGN_IN_REQUEST_CODE) {
             val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
             handleSignInResult(task)
-            /*if (task.isSuccessful) {
-                account = task.result
-            } else {
-                Log.i("Login failed", "try again")
-            }*/
         } else if (requestCode == MEASURE_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK && data != null && data.data != null &&
-                data.hasExtra("MEASUREMENT_POSITION")) {
+                data.hasExtra(MEASUREMENT_POSITION)) {
                 Log.d("measure result", data.data!!.toString())
-                Log.d("measure pos", data.getStringExtra("MEASUREMENT_POSITION"))
+                Log.d("measure pos", data.getStringExtra(MEASUREMENT_POSITION))
             }
+        } else if (requestCode == GOOGLE_FIT_PERMISSIONS_REQUEST_CODE) {
+            Log.d("TODO", "Need to implement this...")
         }
     }
 
@@ -106,7 +98,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnMainFragmentInteraction
 
     }
 
-    private fun checkPermissions(permissions: Array<String>):Boolean {
+    private fun checkAppPermissions(permissions: Array<String>):Boolean {
         var permissionsAccepted = true
         for (permission in permissions) {
             val permissionState = ActivityCompat.checkSelfPermission(this, permission)
@@ -116,7 +108,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnMainFragmentInteraction
         return permissionsAccepted
     }
 
-    private fun requestPermissions(permissions: Array<String>) {
+    private fun requestAppPermissions(permissions: Array<String>) {
         var needRationale = false
         for (permission in permissions) {
             needRationale = needRationale ||
@@ -145,7 +137,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnMainFragmentInteraction
     }
 
     private fun getGoogleAccount():GoogleSignInAccount? {
-        if (account == null) account = GoogleSignIn.getLastSignedInAccount(this)
+        if (account == null) account = getAccount(this)
         return account
     }
 
