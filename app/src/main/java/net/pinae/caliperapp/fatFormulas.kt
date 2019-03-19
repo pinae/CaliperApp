@@ -36,3 +36,39 @@ fun singeMeasurementFormula(measurement: Float, age: Float, sex: Int = FEMALE): 
         throw Exception("Unsupported sex: $sex")
     }
 }
+
+fun jacksonPollockBodyDesityThreeMeasurements(measurementsSum: Float, age: Float, sex: Int = FEMALE): Float {
+    if (sex == FEMALE) {
+        return 1.0994921f +
+                -0.0009929f * measurementsSum +
+                0.0000023f * measurementsSum * measurementsSum +
+                -0.0001392f * age
+    } else if (sex == MALE) {
+        return 1.10938f +
+                -0.0008267f * measurementsSum +
+                0.0000016f * measurementsSum * measurementsSum +
+                -0.0002574f * age
+    } else {
+        throw Exception("Unsupported sex: $sex")
+    }
+}
+
+fun jacksonPollockBodyDesitySevenMeasurements(measurementsSum: Float, age: Float, sex: Int = FEMALE): Float {
+    if (sex == FEMALE) {
+        return 1.097f +
+                -469.71e-6f * measurementsSum +
+                0.56e-6f * measurementsSum * measurementsSum +
+                -288.26e-6f * age
+    } else if (sex == MALE) {
+        return 1.112f +
+                -434.99e-6f * measurementsSum +
+                0.55e-6f * measurementsSum * measurementsSum +
+                -128.28e-6f * age
+    } else {
+        throw Exception("Unsupported sex: $sex")
+    }
+}
+
+fun siriEquationFatFromBodyDensity(bodyDensity: Float): Float {
+    return 4.95f / bodyDensity - 4.5f
+}
