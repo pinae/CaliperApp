@@ -21,6 +21,13 @@ import java.text.DateFormat.getDateInstance
 import java.util.concurrent.TimeUnit
 import com.google.android.gms.fitness.result.DataReadResponse
 import com.google.android.gms.tasks.Task
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
+import com.google.api.client.http.HttpTransport
+import com.google.api.client.http.javanet.NetHttpTransport
+import com.google.api.client.json.JsonFactory
+import com.google.api.client.json.jackson2.JacksonFactory
+import com.google.api.services.people.v1.People
+import com.google.api.services.people.v1.model.Person
 import java.text.DateFormat.getTimeInstance
 import java.util.*
 
@@ -159,7 +166,6 @@ class MainFragment : Fragment() {
 
     private fun loadAge() {
         val account = getAccount(activity as Context)
-
     }
 
     private fun loadBodyFatData() {
