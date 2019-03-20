@@ -56,6 +56,9 @@ class MainFragment : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
         if (prefs.sex < 0) startActivity(Intent(activity, SelectSexActivity::class.java))
+        if (prefs.birthday < GregorianCalendar(1870, 0, 2).time) {
+            startActivity(Intent(activity, SelectBirthdayActivity::class.java))
+        }
     }
 
     override fun onCreateView(

@@ -3,7 +3,7 @@ package net.pinae.caliperapp
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import java.util.Date
+import java.util.*
 
 class SharedPreferencesWrapper(context: Context) {
     private val PREFS_FILENAME = "net.pinae.caliperapp.prefs"
@@ -16,7 +16,7 @@ class SharedPreferencesWrapper(context: Context) {
         set(value) = prefs.edit().putInt(SEX, value).apply()
 
     var birthday: Date
-        get() = Date(prefs.getLong(BIRTHDAY, -1))
+        get() = Date(prefs.getLong(BIRTHDAY, GregorianCalendar(1870, 0, 1).timeInMillis))
         set(value) = prefs.edit().putLong(BIRTHDAY, value.time).apply()
 }
 

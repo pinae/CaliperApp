@@ -12,4 +12,7 @@
     <string name="select_sex_text">Select ♂ if you have a lot of testosterone. Select ♀ if you are more the estrogen type.</string>
     <string name="select_female">♀</string>
     <string name="select_male">♂</string>
+    <string name="select_birthday_explanation">This app uses your birthdate to calculate your age. The age is needed because the body fat ratio changes while aging.</string>
+    <string name="select_birthday_heading">Please select your birthday:</string>
+    <string name="save_birthday">save birthday</string>
 </resources>
