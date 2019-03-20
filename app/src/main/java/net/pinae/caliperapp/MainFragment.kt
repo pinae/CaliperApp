@@ -21,13 +21,6 @@ import java.text.DateFormat.getDateInstance
 import java.util.concurrent.TimeUnit
 import com.google.android.gms.fitness.result.DataReadResponse
 import com.google.android.gms.tasks.Task
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
-import com.google.api.client.http.HttpTransport
-import com.google.api.client.http.javanet.NetHttpTransport
-import com.google.api.client.json.JsonFactory
-import com.google.api.client.json.jackson2.JacksonFactory
-import com.google.api.services.people.v1.People
-import com.google.api.services.people.v1.model.Person
 import java.text.DateFormat.getTimeInstance
 import java.util.*
 
@@ -62,6 +55,7 @@ class MainFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        if (prefs.sex < 0) startActivity(Intent(activity, SelectSexActivity::class.java))
     }
 
     override fun onCreateView(

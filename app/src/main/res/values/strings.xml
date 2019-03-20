@@ -8,4 +8,8 @@
     <string name="ok">OK</string>
     <string name="you_need_to_log_in">You need to log into a Google account to use this app. It depends on the fitness
         store from the Google Fit API.</string>
+    <string name="title_activity_select_sex">SelectSexActivity</string>
+    <string name="select_sex_text">Select ♂ if you have a lot of testosterone. Select ♀ if you are more the estrogen type.</string>
+    <string name="select_female">♀</string>
+    <string name="select_male">♂</string>
 </resources>
