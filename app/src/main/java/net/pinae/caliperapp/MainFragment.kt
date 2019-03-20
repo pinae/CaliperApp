@@ -56,7 +56,7 @@ class MainFragment : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
         if (prefs.sex < 0) startActivity(Intent(activity, SelectSexActivity::class.java))
-        if (prefs.birthday < GregorianCalendar(1870, 0, 2).time) {
+        if (prefs.birthday < GregorianCalendar(1870, 0, 2)) {
             startActivity(Intent(activity, SelectBirthdayActivity::class.java))
         }
     }
@@ -67,7 +67,7 @@ class MainFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view: View = inflater.inflate(R.layout.fragment_main, container, false)
-        view.stomachButton.setOnClickListener {button -> measureBodyPart(button)}
+        view.stomachButton.setOnClickListener { button -> measureBodyPart(button) }
         return view
     }
 
@@ -95,7 +95,6 @@ class MainFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         Log.d("MainFragment", "resuming...")
-        loadAge()
         loadBodyFatData()
     }
 
@@ -159,10 +158,6 @@ class MainFragment : Fragment() {
             .subscribe(DataType.TYPE_BODY_FAT_PERCENTAGE)
             .addOnSuccessListener { Log.i("Fitness API", "Subscribed to TYPE_BODY_FAT_PERCENTAGE") }
             .addOnFailureListener { exception -> Log.e("FitnessAPI error", exception.message) } }
-    }
-
-    private fun loadAge() {
-        val account = getAccount(activity as Context)
     }
 
     private fun loadBodyFatData() {

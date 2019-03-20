@@ -3,7 +3,7 @@ package net.pinae.caliperapp
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import java.util.*
+import java.util.GregorianCalendar
 
 class SharedPreferencesWrapper(context: Context) {
     private val PREFS_FILENAME = "net.pinae.caliperapp.prefs"
@@ -15,9 +15,16 @@ class SharedPreferencesWrapper(context: Context) {
         get() = prefs.getInt(SEX, -1)
         set(value) = prefs.edit().putInt(SEX, value).apply()
 
-    var birthday: Date
-        get() = Date(prefs.getLong(BIRTHDAY, GregorianCalendar(1870, 0, 1).timeInMillis))
-        set(value) = prefs.edit().putLong(BIRTHDAY, value.time).apply()
+    var birthday: GregorianCalendar
+        get() {
+            val tmpCal = GregorianCalendar()
+            tmpCal.timeInMillis = prefs.getLong(BIRTHDAY,
+                GregorianCalendar(1870, 0, 1).timeInMillis)
+            return tmpCal
+        }
+        set(value) {
+            prefs.edit().putLong(BIRTHDAY, value.timeInMillis).apply()
+        }
 }
 
 val prefs: SharedPreferencesWrapper by lazy {
