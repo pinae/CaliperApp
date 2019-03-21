@@ -45,11 +45,13 @@ class SelectBirthdayActivity : AppCompatActivity() {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if (!changingDate) {
-                    val enteredYear: Int = p0.toString().toInt()
-                    if (enteredYear in 1870..GregorianCalendar.getInstance()[GregorianCalendar.YEAR]) {
-                        selectedDate.set(GregorianCalendar.YEAR, enteredYear)
-                        calendarView.setDate(selectedDate.timeInMillis, true, false)
-                    }
+                    try {
+                        val enteredYear: Int = p0.toString().toInt()
+                        if (enteredYear in 1870..GregorianCalendar.getInstance()[GregorianCalendar.YEAR]) {
+                            selectedDate.set(GregorianCalendar.YEAR, enteredYear)
+                            calendarView.setDate(selectedDate.timeInMillis, true, false)
+                        }
+                    } catch (ex :NumberFormatException) {}
                 }
             }
         })

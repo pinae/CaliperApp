@@ -11,6 +11,8 @@ import android.support.v4.app.ActivityCompat
 import android.util.Log
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import com.google.android.gms.auth.api.signin.*
 import com.google.android.gms.common.Scopes
@@ -48,6 +50,22 @@ class MainActivity : AppCompatActivity(), MainFragment.OnMainFragmentInteraction
             signIn()
         }
         updateUI(account)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.options_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item != null) {
+            when (item.itemId) {
+                R.id.action_set_sex -> startActivity(Intent(this, SelectSexActivity::class.java))
+                R.id.action_set_birthday -> startActivity(Intent(this, SelectBirthdayActivity::class.java))
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

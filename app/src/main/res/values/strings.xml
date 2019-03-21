@@ -15,4 +15,6 @@
     <string name="select_birthday_explanation">This app uses your birthdate to calculate your age. The age is needed because the body fat ratio changes while aging.</string>
     <string name="select_birthday_heading">Please select your birthday:</string>
     <string name="save_birthday">save birthday</string>
+    <string name="options_menu_set_sex">set sex</string>
+    <string name="options_menu_set_birthday">set birthday</string>
 </resources>
