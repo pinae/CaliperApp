@@ -17,4 +17,13 @@
     <string name="save_birthday">save birthday</string>
     <string name="options_menu_set_sex">set sex</string>
     <string name="options_menu_set_birthday">set birthday</string>
+    <string name="value_is_not_a_number">Error: The entered value needs to be a number.</string>
+    <string name="stop_measuring_with_this_value">stop measuring with this value</string>
+    <string name="enter_the_measurement_as_a_decimal_number">Enter the measurement as a decimal number.</string>
+    <string name="caliper_explanation_text">Reset the slider at the scale to maximum. Pinch a fold of you skin between thumb and index finger. Place the caliper over the fold while still holding it. Press the caliper with two fingers of your second hand at the raised positions. You may release the fold with your first hand after the caliper maintains its shape. Increase the pressure until the caliper clicks into the catch. Release the caliper and read the measurement fron the scale.</string>
+    <string name="expand_symbol">▼</string>
+    <string name="collapse_symbol">▲</string>
+    <string name="explanation_heading">Explanation:</string>
+    <string name="measurement_position_image_description">An image showing the exact position where to take the measurement.</string>
+    <string name="measured_thickness_of_the_fold">Measured thickness of the fold:</string>
 </resources>

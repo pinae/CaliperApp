@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat.startActivityForResult
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
@@ -47,6 +48,7 @@ class MainFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     private var listener: OnMainFragmentInteractionListener? = null
+    val measurement: Measurement = Measurement()
     var fatHistory: List<FatReading> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,15 +74,18 @@ class MainFragment : Fragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == MEASURE_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK && data != null && data.data != null &&
-                data.hasExtra(MEASUREMENT_POSITION)) {
-                Log.d("Fragment measure result", data.data!!.toString())
-                Log.d("Fragment measure pos", data.getStringExtra(MEASUREMENT_POSITION))
-                saveBodyFat(singeMeasurementFormula(data.data!!.toString().toFloat(), 34f, 0))
-            }
+        Log.d("MainFragment onActRes", requestCode.toString() + ", " + resultCode.toString() + ", Data: " + data.toString())
+        if (requestCode == MEASURE_REQUEST_CODE && resultCode == Activity.RESULT_OK &&
+            data != null && data.data != null && data.hasExtra(MEASUREMENT_BUNDLE)) {
+            Log.d("measure sum", data.data!!.toString())
+            measurement.setFromBundle(data.getBundleExtra(MEASUREMENT_BUNDLE))
+            Log.d("measurement from bundle", measurement.toString())
+            val now = GregorianCalendar(TimeZone.getDefault())
+            val ageInMillis = now.timeInMillis - prefs.birthday.timeInMillis
+            val age = ageInMillis / (1000f * 60f * 60f * 24f * 365.2425f)
+            saveBodyFat(measurement.getFormula()(measurement.getSum(), age, prefs.sex))
         }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onAttach(context: Context) {
@@ -139,14 +144,11 @@ class MainFragment : Fragment() {
             }
     }
 
-    fun measureBodyPart(view: View) {
-        val measureStomachIntent = Intent(activity, MeasureActivity::class.java)
-        when (view) {
-            stomachButton -> {
-                measureStomachIntent.putExtra("MEASUREMENT_POSITION", "STOMACH")
-            }
-        }
-        startActivityForResult(measureStomachIntent, MEASURE_REQUEST_CODE)
+    fun measureBodyPart(view: View? = null) {
+        val measureIntent = Intent(activity, MeasureActivity::class.java)
+        measureIntent.putExtra(MEASUREMENT_POSITION, measurement.getNextMeasurePosition())
+        measureIntent.putExtra(MEASUREMENT_BUNDLE, measurement.writeToBundle())
+        startActivityForResult(measureIntent, MEASURE_REQUEST_CODE)
     }
 
     private fun subscribeToBodyFat() {
