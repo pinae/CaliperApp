@@ -28,10 +28,10 @@ class MeasureActivity : AppCompatActivity() {
                 BELLY -> measurementPositionImageView.setImageResource(R.drawable.ic_belly)
                 HIPS -> measurementPositionImageView.setImageResource(R.drawable.ic_armpit)
                 TRICEPS -> measurementPositionImageView.setImageResource(R.drawable.ic_belly)
-                CHEST -> measurementPositionImageView.setImageResource(R.drawable.ic_armpit)
+                CHEST -> measurementPositionImageView.setImageResource(R.drawable.ic_chest)
                 TIGH -> measurementPositionImageView.setImageResource(R.drawable.ic_belly)
                 ARMPIT -> measurementPositionImageView.setImageResource(R.drawable.ic_armpit)
-                SCAPULA -> measurementPositionImageView.setImageResource(R.drawable.ic_armpit)
+                SCAPULA -> measurementPositionImageView.setImageResource(R.drawable.ic_scapula)
             }
         }
     }
