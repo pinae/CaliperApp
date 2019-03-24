@@ -16,9 +16,12 @@ class SelectBirthdayActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_birthday)
         if (prefs.birthday < GregorianCalendar(1870, 0, 2)) {
-            calendarView.date = GregorianCalendar(1985, 5, 15).timeInMillis
+            val defaultBirthdayMillis = GregorianCalendar(1985, 5, 15).timeInMillis
+            calendarView.date = defaultBirthdayMillis
+            selectedDate.timeInMillis = defaultBirthdayMillis
         } else {
             calendarView.date = prefs.birthday.timeInMillis
+            selectedDate.timeInMillis = prefs.birthday.timeInMillis
         }
         val calendarHelper = GregorianCalendar.getInstance()
         calendarView.maxDate = calendarHelper.timeInMillis
