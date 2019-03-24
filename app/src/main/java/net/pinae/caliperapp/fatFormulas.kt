@@ -4,8 +4,8 @@ const val FEMALE = 0
 const val MALE = 1
 
 fun singeMeasurementFormula(measurement: Float, age: Float, sex: Int = FEMALE): Float {
-    if (sex == FEMALE) {
-        return -81.11624781500858f +
+    return when (sex) {
+        FEMALE -> (-81.11624781500858f +
                 16.24696401279887f * age +
                 1.260578767579677f * measurement +
                 -1.2122698920932902f * age*age +
@@ -17,9 +17,8 @@ fun singeMeasurementFormula(measurement: Float, age: Float, sex: Int = FEMALE): 
                 1.1332827778985168e-05f * age*age*age*age*age +
                 5.612344592680556e-07f * measurement*measurement*measurement*measurement*measurement +
                 -5.138295199899927e-08f * age*age*age*age*age*age +
-                -3.397678636263858e-09f * measurement*measurement*measurement*measurement*measurement*measurement
-    } else if (sex == MALE) {
-        return -6.38085408325614f +
+                -3.397678636263858e-09f * measurement*measurement*measurement*measurement*measurement*measurement)/100
+        MALE -> (-6.38085408325614f +
                 0.08725614951926948f * age +
                 1.1860707716479835f * measurement +
                 0.027892271320127063f * age*age +
@@ -31,41 +30,36 @@ fun singeMeasurementFormula(measurement: Float, age: Float, sex: Int = FEMALE): 
                 -5.626665656874099e-07f * age*age*age*age*age +
                 -2.0716803545210805e-08f * measurement*measurement*measurement*measurement*measurement +
                 2.7858988551576793e-09f * age*age*age*age*age*age +
-                -7.923464855087344e-10f * measurement*measurement*measurement*measurement*measurement*measurement
-    } else {
-        throw Exception("Unsupported sex: $sex")
+                -7.923464855087344e-10f * measurement*measurement*measurement*measurement*measurement*measurement)/100
+        else -> throw Exception("Unsupported sex: $sex")
     }
 }
 
-fun jacksonPollockBodyDesityThreeMeasurements(measurementsSum: Float, age: Float, sex: Int = FEMALE): Float {
-    if (sex == FEMALE) {
-        return 1.0994921f +
+fun jacksonPollockBodyDensityThreeMeasurements(measurementsSum: Float, age: Float, sex: Int = FEMALE): Float {
+    return when (sex) {
+        FEMALE -> 1.0994921f +
                 -0.0009929f * measurementsSum +
                 0.0000023f * measurementsSum * measurementsSum +
                 -0.0001392f * age
-    } else if (sex == MALE) {
-        return 1.10938f +
+        MALE -> 1.10938f +
                 -0.0008267f * measurementsSum +
                 0.0000016f * measurementsSum * measurementsSum +
                 -0.0002574f * age
-    } else {
-        throw Exception("Unsupported sex: $sex")
+        else -> throw Exception("Unsupported sex: $sex")
     }
 }
 
-fun jacksonPollockBodyDesitySevenMeasurements(measurementsSum: Float, age: Float, sex: Int = FEMALE): Float {
-    if (sex == FEMALE) {
-        return 1.097f +
+fun jacksonPollockBodyDensitySevenMeasurements(measurementsSum: Float, age: Float, sex: Int = FEMALE): Float {
+    return when (sex) {
+        FEMALE -> 1.097f +
                 -469.71e-6f * measurementsSum +
                 0.56e-6f * measurementsSum * measurementsSum +
                 -288.26e-6f * age
-    } else if (sex == MALE) {
-        return 1.112f +
+        MALE -> 1.112f +
                 -434.99e-6f * measurementsSum +
                 0.55e-6f * measurementsSum * measurementsSum +
                 -128.28e-6f * age
-    } else {
-        throw Exception("Unsupported sex: $sex")
+        else -> throw Exception("Unsupported sex: $sex")
     }
 }
 

@@ -4,9 +4,9 @@ import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat.startActivityForResult
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
@@ -22,6 +22,9 @@ import java.text.DateFormat.getDateInstance
 import java.util.concurrent.TimeUnit
 import com.google.android.gms.fitness.result.DataReadResponse
 import com.google.android.gms.tasks.Task
+import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter
+import com.jjoe64.graphview.series.DataPoint as GVDataPoint
+import com.jjoe64.graphview.series.LineGraphSeries
 import java.text.DateFormat.getTimeInstance
 import java.util.*
 
@@ -70,6 +73,9 @@ class MainFragment : Fragment() {
         // Inflate the layout for this fragment
         val view: View = inflater.inflate(R.layout.fragment_main, container, false)
         view.stomachButton.setOnClickListener { button -> measureBodyPart(button) }
+        view.fatGraph.viewport.isScalable = false
+        view.fatGraph.viewport.isScrollable = true
+        view.fatGraph.gridLabelRenderer.labelFormatter = DateAsXAxisLabelFormatter(activity)
         return view
     }
 
@@ -258,7 +264,24 @@ class MainFragment : Fragment() {
         }
         if (!pointAdded) newHistory.add(dataPoint)
         fatHistory = newHistory
+        updateFatDiagram()
         Log.d("fatHistory", fatHistory.toString())
+    }
+
+    private fun updateFatDiagram() {
+        val dataSeries = LineGraphSeries<GVDataPoint>()
+        for (entry in fatHistory) {
+            Log.d("fatHistory entry", Date(entry.date).toString() + ": " + entry.value.toString())
+            dataSeries.appendData(GVDataPoint(Date(entry.date), entry.value.toDouble() * 100), true, 500)
+        }
+        dataSeries.isDrawDataPoints = true
+        dataSeries.dataPointsRadius = 10.0f
+        dataSeries.thickness = 7
+        dataSeries.setAnimated(true)
+        if (fatGraph != null) {
+            fatGraph.removeAllSeries()
+            fatGraph.addSeries(dataSeries)
+        }
     }
 
     private fun saveBodyFat(fatPercentage: Float) {

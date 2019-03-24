@@ -46,12 +46,12 @@ class Measurement() {
         if (dBelly != null && dHips != null && dTriceps != null && dChest != null && dTigh != null &&
             dArmpit != null && dScapula != null) {
             return { measurement, age, sex -> siriEquationFatFromBodyDensity(
-                jacksonPollockBodyDesitySevenMeasurements(measurement, age, sex)) }
+                jacksonPollockBodyDensitySevenMeasurements(measurement, age, sex)) }
         }
         if ((dBelly != null && prefs.sex == FEMALE && dHips != null && dTriceps != null) ||
             (dBelly != null && prefs.sex == MALE && dChest != null && dTigh != null)) {
             return { measurement, age, sex -> siriEquationFatFromBodyDensity(
-                jacksonPollockBodyDesityThreeMeasurements(measurement, age, sex)) }
+                jacksonPollockBodyDensityThreeMeasurements(measurement, age, sex)) }
         }
         if (dBelly != null) {
             return { measurement, age, sex -> singeMeasurementFormula(measurement, age, sex) }
