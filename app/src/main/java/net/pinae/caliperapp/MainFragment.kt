@@ -7,9 +7,11 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat.startActivityForResult
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -73,9 +75,10 @@ class MainFragment : Fragment() {
         // Inflate the layout for this fragment
         val view: View = inflater.inflate(R.layout.fragment_main, container, false)
         view.stomachButton.setOnClickListener { button -> measureBodyPart(button) }
-        view.fatGraph.viewport.isScalable = false
+        view.fatGraph.viewport.isScalable = true
         view.fatGraph.viewport.isScrollable = true
         view.fatGraph.gridLabelRenderer.labelFormatter = DateAsXAxisLabelFormatter(activity)
+        view.fatGraph.gridLabelRenderer.numHorizontalLabels = 3
         return view
     }
 
@@ -278,9 +281,13 @@ class MainFragment : Fragment() {
         dataSeries.dataPointsRadius = 10.0f
         dataSeries.thickness = 7
         dataSeries.setAnimated(true)
+        dataSeries.setOnDataPointTapListener { _, dataPoint -> Log.d("dp", dataPoint.x.toString() + ", " + dataPoint.y.toString()) }
         if (fatGraph != null) {
             fatGraph.removeAllSeries()
             fatGraph.addSeries(dataSeries)
+            fatGraph.viewport.isXAxisBoundsManual = true
+            fatGraph.viewport.setMinX(dataSeries.lowestValueX)
+            fatGraph.viewport.setMaxX(dataSeries.highestValueX)
         }
     }
 
