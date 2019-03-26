@@ -4,14 +4,11 @@ import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat.startActivityForResult
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -42,13 +39,13 @@ private const val ARG_PARAM2 = "param2"
 /**
  * A simple [Fragment] subclass.
  * Activities that contain this fragment must implement the
- * [MainFragment.OnMainFragmentInteractionListener] interface
+ * [FatHistoryFragment.OnMainFragmentInteractionListener] interface
  * to handle interaction events.
- * Use the [MainFragment.newInstance] factory method to
+ * Use the [FatHistoryFragment.newInstance] factory method to
  * create an instance of this fragment.
  *
  */
-class MainFragment : Fragment() {
+class FatHistoryFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -83,7 +80,7 @@ class MainFragment : Fragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        Log.d("MainFragment onActRes", requestCode.toString() + ", " + resultCode.toString() + ", Data: " + data.toString())
+        Log.d("FatHistoryFragment onActRes", requestCode.toString() + ", " + resultCode.toString() + ", Data: " + data.toString())
         if (requestCode == MEASURE_REQUEST_CODE && resultCode == Activity.RESULT_OK &&
             data != null && data.data != null && data.hasExtra(MEASUREMENT_BUNDLE)) {
             Log.d("measure sum", data.data!!.toString())
@@ -108,7 +105,7 @@ class MainFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        Log.d("MainFragment", "resuming...")
+        Log.d("FatHistoryFragment", "resuming...")
         loadBodyFatData()
     }
 
@@ -140,12 +137,12 @@ class MainFragment : Fragment() {
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment MainFragment.
+         * @return A new instance of fragment FatHistoryFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            MainFragment().apply {
+            FatHistoryFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
@@ -165,10 +162,15 @@ class MainFragment : Fragment() {
         Log.d("GSignIn account", account.toString())
         val recordingClient = Fitness.getRecordingClient(activity as Activity, account)
         recordingClient.listSubscriptions(DataType.TYPE_BODY_FAT_PERCENTAGE).addOnSuccessListener {
-                subscriptions -> if (subscriptions.isEmpty()) recordingClient
-            .subscribe(DataType.TYPE_BODY_FAT_PERCENTAGE)
-            .addOnSuccessListener { Log.i("Fitness API", "Subscribed to TYPE_BODY_FAT_PERCENTAGE") }
-            .addOnFailureListener { exception -> Log.e("FitnessAPI error", exception.message) } }
+                subscriptions -> if (subscriptions.isEmpty())
+                                   recordingClient.subscribe(DataType.TYPE_BODY_FAT_PERCENTAGE)
+                                       .addOnSuccessListener {
+                                               Log.i("Fitness API", "Subscribed to TYPE_BODY_FAT_PERCENTAGE")
+                                       }
+                                       .addOnFailureListener {
+                                               exception -> Log.e("FitnessAPI error", exception.message)
+                                       }
+        }
     }
 
     private fun loadBodyFatData() {

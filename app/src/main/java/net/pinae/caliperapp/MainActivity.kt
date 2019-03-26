@@ -21,7 +21,7 @@ import com.google.android.gms.tasks.Task
 import com.google.android.gms.common.api.ApiException
 
 
-class MainActivity : AppCompatActivity(), MainFragment.OnMainFragmentInteractionListener {
+class MainActivity : AppCompatActivity(), FatHistoryFragment.OnMainFragmentInteractionListener {
     private var client: GoogleSignInClient? = null
     private var account: GoogleSignInAccount? = null
 
@@ -70,17 +70,17 @@ class MainActivity : AppCompatActivity(), MainFragment.OnMainFragmentInteraction
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == SIGN_IN_REQUEST_CODE) {
-            val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
-            handleSignInResult(task)
-        } else if (requestCode == MEASURE_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK && data != null && data.data != null &&
+        when (requestCode) {
+            SIGN_IN_REQUEST_CODE -> {
+                val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
+                handleSignInResult(task)
+            }
+            MEASURE_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK && data != null && data.data != null &&
                 data.hasExtra(MEASUREMENT_POSITION)) {
                 Log.d("measure result", data.data!!.toString())
                 Log.d("measure pos", data.getStringExtra(MEASUREMENT_POSITION))
             }
-        } else if (requestCode == GOOGLE_FIT_PERMISSIONS_REQUEST_CODE) {
-            Log.d("TODO", "Need to implement this...")
+            GOOGLE_FIT_PERMISSIONS_REQUEST_CODE -> Log.d("TODO", "Need to implement this...")
         }
     }
 
@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnMainFragmentInteraction
         if (account == null) {
             setFragment(NotLoggedInFragment.newInstance(), frameId)
         } else {
-            setFragment(MainFragment.newInstance("a", "b"), frameId)
+            setFragment(FatHistoryFragment.newInstance("a", "b"), frameId)
         }
     }
 
