@@ -182,8 +182,6 @@ class FatHistoryFragment : Fragment() {
         }
         subscribeToBodyFat()
         val cal = Calendar.getInstance()
-        val now = Date()
-        cal.time = now
         val endTime = cal.timeInMillis
         cal.add(Calendar.WEEK_OF_YEAR, -1)
         val startTime = cal.timeInMillis
