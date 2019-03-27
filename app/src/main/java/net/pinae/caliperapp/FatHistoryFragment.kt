@@ -294,8 +294,6 @@ class FatHistoryFragment : Fragment() {
     private fun saveBodyFat(fatPercentage: Float) {
         val account = getAccount(activity as Context)
         val cal = Calendar.getInstance()
-        val now = Date()
-        cal.time = now
         val endTime = cal.timeInMillis
         cal.add(Calendar.SECOND, -1)
         val startTime = cal.timeInMillis
