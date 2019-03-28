@@ -29,16 +29,12 @@ class MainActivity : AppCompatActivity(), FatHistoryFragment.OnMainFragmentInter
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         if (!checkAppPermissions(arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.BODY_SENSORS))) {
             requestAppPermissions(arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.BODY_SENSORS))
         }
         val gso: GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestEmail()
             .requestScopes(Scope(Scopes.FITNESS_BODY_READ_WRITE))
-            .requestScopes(Scope(Scopes.PROFILE))
             .build()
         client = GoogleSignIn.getClient(this, gso)
     }

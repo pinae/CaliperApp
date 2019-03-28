@@ -3,8 +3,8 @@ package net.pinae.caliperapp
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity;
 import android.view.View
-import kotlinx.android.synthetic.main.content_select_sex.select_female_button
-import kotlinx.android.synthetic.main.content_select_sex.select_male_button
+import kotlinx.android.synthetic.main.activity_select_sex.select_female_button
+import kotlinx.android.synthetic.main.activity_select_sex.select_male_button
 
 class SelectSexActivity : AppCompatActivity() {
 
