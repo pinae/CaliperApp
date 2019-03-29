@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,197 +9,131 @@
     android:orientation="vertical"
     tools:context=".MeasureActivity" >
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/explanationLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/explanationLayout"
+                android:id="@+id/explanationHeadingLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:id="@+id/explanationHeadingLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/explanationHeading"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:layout_weight="1"
-                        android:onClick="toggleExplanation"
-                        android:text="@string/explanation_heading"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline" />
-
-                    <TextView
-                        android:id="@+id/expandExplanationButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:layout_weight="1"
-                        android:background="@android:color/transparent"
-                        android:gravity="end"
-                        android:onClick="toggleExplanation"
-                        android:padding="0dp"
-                        android:text="@string/expand_symbol"
-                        android:textAlignment="textEnd"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1" />
-
-                </LinearLayout>
+                android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/explanationText"
-                    android:layout_width="match_parent"
+                    android:id="@+id/explanationHeading"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_weight="1"
+                    android:onClick="toggleExplanation"
+                    android:text="@string/explanation_heading"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Overline" />
+
+                <TextView
+                    android:id="@+id/expandExplanationButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
-                    android:text="@string/caliper_explanation_text"
-                    android:visibility="gone" />
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:gravity="end"
+                    android:onClick="toggleExplanation"
+                    android:padding="0dp"
+                    android:text="@string/expand_symbol"
+                    android:textAlignment="textEnd"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1" />
 
             </LinearLayout>
 
-            <ImageView
-                android:id="@+id/measurementPositionImageView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scaleType="center"
-                android:contentDescription="@string/measurement_position_image_description"
-                app:srcCompat="@drawable/ic_belly" />
-
             <TextView
-                android:id="@+id/captionForMeasurementInput"
+                android:id="@+id/explanationText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="0dp"
-                android:text="@string/measured_thickness_of_the_fold"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
-
-            <EditText
-                android:id="@+id/measurementInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="0dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:focusable="auto"
-                android:hint="@string/enter_the_measurement_as_a_decimal_number"
-                android:inputType="numberDecimal" />
-
-            <Button
-                android:id="@+id/continueMeasurementButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:background="@color/colorAccent"
-                android:gravity="end"
-                android:onClick="saveMeasurement"
-                android:padding="16dp"
-                android:text="@string/measure_button"
-                android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
-
-            <Button
-                android:id="@+id/abortMeasurementButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:background="@color/colorAccent"
-                android:gravity="end"
-                android:onClick="saveMeasurement"
-                android:padding="16dp"
-                android:text="@string/stop_measuring_with_this_value"
-                android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
+                android:text="@string/caliper_explanation_text"
+                android:visibility="gone" />
 
         </LinearLayout>
 
-    </ScrollView>
+        <ImageView
+            android:id="@+id/measurementPositionImageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="center"
+            android:contentDescription="@string/measurement_position_image_description"
+            app:srcCompat="@drawable/ic_belly" />
 
-</LinearLayout>
-
-
-<!--<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/constraintLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MeasureActivity">
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        <TextView
+            android:id="@+id/captionForMeasurementInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="0dp"
+            android:text="@string/measured_thickness_of_the_fold"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
 
         <EditText
             android:id="@+id/measurementInput"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="0dp"
             android:layout_marginEnd="8dp"
-            android:ems="10"
-            android:hint="@string/thickness_input_hint"
-            android:importantForAutofill="no"
-            android:inputType="numberDecimal"
-            app:layout_constraintBottom_toTopOf="@+id/saveMeasurementButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            tools:layout_conversion_absoluteHeight="45dp"
-            tools:layout_conversion_absoluteWidth="213dp" />
+            android:layout_marginBottom="8dp"
+            android:autofillHints="@string/enter_the_measurement_as_a_decimal_number"
+            android:focusable="auto"
+            android:hint="@string/enter_the_measurement_as_a_decimal_number"
+            android:inputType="numberDecimal" />
 
         <Button
-            android:id="@+id/saveMeasurementButton"
-            android:layout_width="wrap_content"
+            android:id="@+id/continueMeasurementButton"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rounded_button"
+            android:gravity="end"
             android:onClick="saveMeasurement"
-            android:text="@string/measure_button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/measurementInput"
-            tools:layout_conversion_absoluteHeight="48dp"
-            tools:layout_conversion_absoluteWidth="88dp" />
+            android:padding="16dp"
+            android:enabled="false"
+            android:text="@string/save_measurement_button"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
 
         <Button
             android:id="@+id/abortMeasurementButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rounded_button"
+            android:gravity="end"
+            android:onClick="saveMeasurement"
+            android:padding="16dp"
+            android:enabled="false"
             android:text="@string/stop_measuring_with_this_value"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/saveMeasurementButton" />
-    </android.support.constraint.ConstraintLayout>
-</android.support.constraint.ConstraintLayout>-->
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
+
+    </LinearLayout>
+
+</ScrollView>

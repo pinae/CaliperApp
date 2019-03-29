@@ -2,7 +2,7 @@ package net.pinae.caliperapp
 
 import android.os.Bundle
 
-class Measurement() {
+class Measurement {
     var dBelly: Float? = null
     var dHips: Float? = null
     var dTriceps: Float? = null
@@ -24,6 +24,11 @@ class Measurement() {
     fun allValuesMeasured() :Boolean {
         return dBelly != null && dHips != null && dTriceps != null && dChest != null && dTigh != null &&
                 dArmpit != null && dScapula != null
+    }
+
+    fun missingOnlyTheLastMeasurement() :Boolean {
+        return dBelly != null && dHips != null && dTriceps != null && dChest != null && dTigh != null &&
+                dArmpit != null && dScapula == null
     }
 
     fun getSum() :Float {
@@ -63,8 +68,7 @@ class Measurement() {
         if (this.allValuesMeasured()) {
             return ""
         }
-        if (dBelly != null && dHips != null && dTriceps != null && dChest != null && dTigh != null &&
-            dArmpit != null && dScapula == null) {
+        if (this.missingOnlyTheLastMeasurement()) {
             return SCAPULA
         }
         if (dBelly != null && dHips != null && dTriceps != null && dChest != null && dTigh != null &&

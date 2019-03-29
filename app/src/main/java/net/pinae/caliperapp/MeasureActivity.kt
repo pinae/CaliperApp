@@ -5,6 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.EditText
@@ -34,6 +36,34 @@ class MeasureActivity : AppCompatActivity() {
                 SCAPULA -> measurementPositionImageView.setImageResource(R.drawable.ic_scapula)
             }
         }
+        if (measurement.missingOnlyTheLastMeasurement()) {
+            continueMeasurementButton.visibility = View.GONE
+        } else {
+            continueMeasurementButton.visibility = View.VISIBLE
+        }
+        measurementInput.addTextChangedListener(object :TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                try {
+                    val enteredValue = p0.toString().toFloat()
+                    if (enteredValue in 2.0..60.0) {
+                        continueMeasurementButton.isEnabled = true
+                        abortMeasurementButton.isEnabled = true
+                    } else {
+                        continueMeasurementButton.isEnabled = false
+                        abortMeasurementButton.isEnabled = false
+                    }
+                } catch (e :NumberFormatException) {
+                    continueMeasurementButton.isEnabled = false
+                    abortMeasurementButton.isEnabled = false
+                }
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

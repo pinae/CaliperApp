@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CaliperApp</string>
+    <string name="display_value_caption">Messung vom %1$td.%1$tm.%1$tY %1$tT:</string>
+    <string name="thickness_input_hint">Dicke in mm</string>
+    <string name="ok">OK</string>
+    <string name="save_measurement_button">Speichere diesen Wert und fahre fort</string>
+    <string name="select_female">♀</string>
+    <string name="select_male">♂</string>
+    <string name="select_birthday_explanation">Die App nutzt deinen Geburtstag, um dein Alter zu berechnen.
+        Das Alter muss sie wissen, da der Körperfettanteil sich im laufe des Lebens verändert.</string>
+    <string name="select_birthday_heading">Wähle deinen Geburtstag aus:</string>
+    <string name="save_birthday">Geburtstag speichern</string>
+    <string name="options_menu_set_sex">Geschlecht setzen</string>
+    <string name="options_menu_set_birthday">Geburtstag setzen</string>
+    <string name="value_is_not_a_number">Fehler: Bitte gib eine Zahl ein.</string>
+    <string name="stop_measuring_with_this_value">Ende die Messung mit diesem Wert</string>
+    <string name="enter_the_measurement_as_a_decimal_number">Gib den Messwert als Dezimalzahl ein.</string>
+    <string name="caliper_explanation_text">Setze den Läufer auf der Skala zurück zum Maximum.
+        Klemme die Speckfalte zwischen Daumen und Zeigefinger ein.
+        Positioniere die Messzange mit der anderen Hand über der Falte, ohne sie loszulassen.
+        Drücke die Messzange mit zwei Fingern an der vorbereiteten Stelle zusammen.
+        Sobald die Zange die Speckfalte in Position hält, kannst du die erste Hand loslassen.
+        Steigere den Druck auf die Zange, bis sie einrastet.
+        Öffne die Zange und lies an der Position des Läufers den Messwert in Millimetern ab.
+    </string>
+    <string name="expand_symbol">▼</string>
+    <string name="collapse_symbol">▲</string>
+    <string name="explanation_heading">So misst du mit der Zange:</string>
+    <string name="measurement_position_image_description">Ein Bild, das die exakte Position für die Messung zeigt.</string>
+    <string name="measured_thickness_of_the_fold">Gemessene Dicke der Falte:</string>
+    <string name="log_in_to_google">Bei Google anmelden</string>
+    <string name="display_value">%1$.1f%%</string>
+    <string name="select_sex_text">Wähle ♂, wenn du viel Testosteron hast. Wähle ♀, wenn dein Östrogen überwiegt.</string>
+    <string name="you_need_to_log_in">Um alle Funktionen dieser App zu nutzen, musst du dich bei Google anmelden,
+        da sie die Datenbank von Google Fit benutzt.</string>
+    <string name="measure_button">neue Messung starten</string>
+    <string name="delete_this_measurement">lösche diese Messung</string>
+</resources>

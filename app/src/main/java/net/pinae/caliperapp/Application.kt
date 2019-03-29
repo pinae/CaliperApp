@@ -7,9 +7,14 @@ import java.util.GregorianCalendar
 
 class SharedPreferencesWrapper(context: Context) {
     private val PREFS_FILENAME = "net.pinae.caliperapp.prefs"
+    private val LOGIN_REJECTED = "login_rejected"
     private val SEX = "sex"
     private val BIRTHDAY = "birthday"
     private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_FILENAME, 0)
+
+    var loginRejected: Boolean
+        get() = prefs.getBoolean(LOGIN_REJECTED, false)
+        set(value) = prefs.edit().putBoolean(LOGIN_REJECTED, value).apply()
 
     var sex: Int
         get() = prefs.getInt(SEX, -1)

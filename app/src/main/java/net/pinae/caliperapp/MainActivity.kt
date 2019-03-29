@@ -1,15 +1,10 @@
 package net.pinae.caliperapp
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
 import android.util.Log
-import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.view.Menu
 import android.view.MenuItem
@@ -19,33 +14,38 @@ import com.google.android.gms.common.Scopes
 import com.google.android.gms.common.api.Scope
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.common.api.ApiException
+import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 
 
-class MainActivity : AppCompatActivity(), FatHistoryFragment.OnMainFragmentInteractionListener {
+abstract class TopFragment: Fragment() {
+    abstract fun setFatMeasurementNow(fat :Float)
+}
+
+
+class MainActivity : AppCompatActivity(),
+    FatHistoryFragment.OnFatHistoryFragmentValueSelected,
+    NotLoggedInFragment.OnLoginRequestByClick {
     private var client: GoogleSignInClient? = null
     private var account: GoogleSignInAccount? = null
+    private val measurement: Measurement = Measurement()
+    private var displayValue: FatReading? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        if (!checkAppPermissions(arrayOf(
-                Manifest.permission.BODY_SENSORS))) {
-            requestAppPermissions(arrayOf(
-                Manifest.permission.BODY_SENSORS))
-        }
         val gso: GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestScopes(Scope(Scopes.FITNESS_BODY_READ_WRITE))
             .build()
         client = GoogleSignIn.getClient(this, gso)
+        newMeasurementButton.setOnClickListener { button -> measureBodyPart(button) }
     }
 
     override fun onResume() {
         super.onResume()
-        if (getGoogleAccount() == null) {
-            Log.d("GoogleAccount", getGoogleAccount().toString())
-            signIn()
-        }
-        updateUI(account)
+        if ((getGoogleAccount() == null || getGoogleAccount()!!.id == null) && !prefs.loginRejected) signIn()
+        Log.d("onResume MA.account", account.toString())
+        updateUI(getGoogleAccount())
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -71,79 +71,81 @@ class MainActivity : AppCompatActivity(), FatHistoryFragment.OnMainFragmentInter
                 val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
                 handleSignInResult(task)
             }
-            MEASURE_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK && data != null && data.data != null &&
-                data.hasExtra(MEASUREMENT_POSITION)) {
-                Log.d("measure result", data.data!!.toString())
-                Log.d("measure pos", data.getStringExtra(MEASUREMENT_POSITION))
+            MEASURE_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK &&
+                data != null && data.data != null && data.hasExtra(MEASUREMENT_BUNDLE)) {
+                    measurement.setFromBundle(data.getBundleExtra(MEASUREMENT_BUNDLE))
+                    val now = GregorianCalendar(TimeZone.getDefault())
+                    val ageInMillis = now.timeInMillis - prefs.birthday.timeInMillis
+                    val age = ageInMillis / (1000f * 60f * 60f * 24f * 365.2425f)
+                    this.updateUI(getGoogleAccount())
+                    if (!supportFragmentManager.fragments.isEmpty() &&
+                        getTopFragment() is TopFragment) {
+                        val topFragment = getTopFragment() as TopFragment
+                        topFragment.setFatMeasurementNow(measurement.getFormula()(measurement.getSum(), age, prefs.sex))
+                    } else throw Exception("topFragment is missing!")
+
             }
-            GOOGLE_FIT_PERMISSIONS_REQUEST_CODE -> Log.d("TODO", "Need to implement this...")
         }
     }
 
     private fun updateUI(account: GoogleSignInAccount?) {
-        val frameId = R.id.baseLayout
-        if (account == null) {
-            setFragment(NotLoggedInFragment.newInstance(), frameId)
+        val frameId = R.id.topFragmentContainer
+        if (account == null || account.id == null) {
+            if (getTopFragment() != null && getTopFragment() is NotLoggedInFragment)
+                setFragment(getTopFragment()!!, frameId)
+            else setFragment(NotLoggedInFragment.newInstance(), frameId)
         } else {
-            setFragment(FatHistoryFragment.newInstance("a", "b"), frameId)
+            if (getTopFragment() != null && getTopFragment() is FatHistoryFragment)
+                setFragment(getTopFragment()!!, frameId)
+            else setFragment(FatHistoryFragment.newInstance(), frameId)
+        }
+        if (displayValue == null) {
+            measurementValueCaption.visibility = View.GONE
+            measurementValue.visibility = View.GONE
+        } else {
+            measurementValueCaption.text = getString(R.string.display_value_caption, displayValue!!.date)
+            measurementValue.text = getString(R.string.display_value, displayValue!!.value * 100.0f)
+            measurementValueCaption.visibility = View.VISIBLE
+            measurementValue.visibility = View.VISIBLE
+        }
+        if (displayValue != null && getTopFragment() is FatHistoryFragment) {
+            deleteMeasurementButton.visibility = View.VISIBLE
+        } else {
+            deleteMeasurementButton.visibility = View.GONE
         }
     }
 
+    private fun getTopFragment() :Fragment? = if (supportFragmentManager.fragments.isEmpty()) null
+    else supportFragmentManager.fragments[supportFragmentManager.fragments.count() - 1]
+
     private fun setFragment(fragment: Fragment, frameId: Int) {
-        if (supportFragmentManager.fragments.isEmpty()) {
-            addFragment(fragment, frameId)
-        } else {
-            replaceFragment(fragment, frameId)
+        when {
+            supportFragmentManager.fragments.isEmpty() -> addFragment(fragment, frameId)
+            else -> replaceFragment(fragment, frameId)
         }
+    }
+
+    private fun measureBodyPart(view: View? = null) {
+        val measureIntent = Intent(this, MeasureActivity::class.java)
+        measureIntent.putExtra(MEASUREMENT_POSITION, measurement.getNextMeasurePosition())
+        measureIntent.putExtra(MEASUREMENT_BUNDLE, measurement.writeToBundle())
+        startActivityForResult(measureIntent, MEASURE_REQUEST_CODE)
     }
 
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
-            val account = completedTask.getResult(ApiException::class.java)
-
+            account = completedTask.getResult(ApiException::class.java)
+            prefs.loginRejected = false
             // Signed in successfully, show authenticated UI.
             updateUI(account)
         } catch (e: ApiException) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w("MainActivity", "signInResult:failed code=" + e.statusCode)
+            prefs.loginRejected = true
             updateUI(null)
         }
 
-    }
-
-    private fun checkAppPermissions(permissions: Array<String>):Boolean {
-        var permissionsAccepted = true
-        for (permission in permissions) {
-            val permissionState = ActivityCompat.checkSelfPermission(this, permission)
-            Log.d(permission, permissionState.toString())
-            permissionsAccepted = permissionsAccepted && permissionState == PackageManager.PERMISSION_GRANTED
-        }
-        return permissionsAccepted
-    }
-
-    private fun requestAppPermissions(permissions: Array<String>) {
-        var needRationale = false
-        for (permission in permissions) {
-            needRationale = needRationale ||
-                    ActivityCompat.shouldShowRequestPermissionRationale(this, permission)
-        }
-        if (needRationale) {
-            Log.i("missing Permissions", "showing request permission rationale")
-            val view: View? = findViewById(android.R.id.content)
-            if (view != null) {
-                Log.d("view", view.toString())
-                Snackbar.make(
-                    view, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE
-                ).setAction(
-                    R.string.ok
-                ) {
-                    ActivityCompat.requestPermissions(this, permissions, PERMISSIONS_REQUEST_CODE)
-                }.show()
-            }
-        } else {
-            ActivityCompat.requestPermissions(this, permissions, PERMISSIONS_REQUEST_CODE)
-        }
     }
 
     private fun signIn() {
@@ -155,7 +157,17 @@ class MainActivity : AppCompatActivity(), FatHistoryFragment.OnMainFragmentInter
         return account
     }
 
-    override fun onFragmentInteraction(uri: Uri) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onFatHistoryValueSelected(value: FatReading?) {
+        displayValue = value
+        updateUI(getGoogleAccount())
+    }
+
+    override fun onGoogleLoginRequested() {
+        signIn()
+    }
+
+    fun deleteMeasurement(view: View?) {
+        if (displayValue != null && getTopFragment() != null && getTopFragment() is FatHistoryFragment)
+            (getTopFragment() as FatHistoryFragment).deleteDataPoint(displayValue!!)
     }
 }

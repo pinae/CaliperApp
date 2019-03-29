@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
@@ -14,13 +13,13 @@ import android.view.ViewGroup
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.data.*
+import com.google.android.gms.fitness.request.DataDeleteRequest
 import com.google.android.gms.fitness.request.DataReadRequest
-import kotlinx.android.synthetic.main.fragment_main.*
-import kotlinx.android.synthetic.main.fragment_main.view.*
+import kotlinx.android.synthetic.main.fragment_fat_history.*
+import kotlinx.android.synthetic.main.fragment_fat_history.view.*
 import java.text.DateFormat.getDateInstance
 import java.util.concurrent.TimeUnit
 import com.google.android.gms.fitness.result.DataReadResponse
-import com.google.android.gms.tasks.Task
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter
 import com.jjoe64.graphview.series.DataPoint as GVDataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
@@ -30,35 +29,25 @@ import java.util.*
 
 data class FatReading(val date: Long, val value: Float)
 
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 /**
  * A simple [Fragment] subclass.
  * Activities that contain this fragment must implement the
- * [FatHistoryFragment.OnMainFragmentInteractionListener] interface
+ * [FatHistoryFragment.OnFatHistoryFragmentValueSelected] interface
  * to handle interaction events.
  * Use the [FatHistoryFragment.newInstance] factory method to
  * create an instance of this fragment.
  *
  */
-class FatHistoryFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-    private var listener: OnMainFragmentInteractionListener? = null
-    val measurement: Measurement = Measurement()
-    var fatHistory: List<FatReading> = arrayListOf()
+class FatHistoryFragment : TopFragment() {
+    private var listener: OnFatHistoryFragmentValueSelected? = null
+    private var fatHistory: List<FatReading> = arrayListOf()
+
+    interface OnFatHistoryFragmentValueSelected {
+        fun onFatHistoryValueSelected(value: FatReading?)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
         if (prefs.sex < 0) startActivity(Intent(activity, SelectSexActivity::class.java))
         if (prefs.birthday < GregorianCalendar(1870, 0, 2)) {
             startActivity(Intent(activity, SelectBirthdayActivity::class.java))
@@ -70,8 +59,7 @@ class FatHistoryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view: View = inflater.inflate(R.layout.fragment_main, container, false)
-        view.stomachButton.setOnClickListener { button -> measureBodyPart(button) }
+        val view: View = inflater.inflate(R.layout.fragment_fat_history, container, false)
         view.fatGraph.viewport.isScalable = true
         view.fatGraph.viewport.isScrollable = true
         view.fatGraph.gridLabelRenderer.labelFormatter = DateAsXAxisLabelFormatter(activity)
@@ -79,33 +67,17 @@ class FatHistoryFragment : Fragment() {
         return view
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        Log.d("FatHistoryFragment onActRes", requestCode.toString() + ", " + resultCode.toString() + ", Data: " + data.toString())
-        if (requestCode == MEASURE_REQUEST_CODE && resultCode == Activity.RESULT_OK &&
-            data != null && data.data != null && data.hasExtra(MEASUREMENT_BUNDLE)) {
-            Log.d("measure sum", data.data!!.toString())
-            measurement.setFromBundle(data.getBundleExtra(MEASUREMENT_BUNDLE))
-            Log.d("measurement from bundle", measurement.toString())
-            val now = GregorianCalendar(TimeZone.getDefault())
-            val ageInMillis = now.timeInMillis - prefs.birthday.timeInMillis
-            val age = ageInMillis / (1000f * 60f * 60f * 24f * 365.2425f)
-            saveBodyFat(measurement.getFormula()(measurement.getSum(), age, prefs.sex))
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnMainFragmentInteractionListener) {
+        if (context is OnFatHistoryFragmentValueSelected) {
             listener = context
         } else {
-            throw RuntimeException("$context must implement OnFragmentInteractionListener")
+            throw RuntimeException("$context must implement OnFatHistoryFragmentValueSelected")
         }
     }
 
     override fun onResume() {
         super.onResume()
-        Log.d("FatHistoryFragment", "resuming...")
         loadBodyFatData()
     }
 
@@ -114,47 +86,18 @@ class FatHistoryFragment : Fragment() {
         listener = null
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments]
-     * (http://developer.android.com/training/basics/fragments/communicating.html)
-     * for more information.
-     */
-    interface OnMainFragmentInteractionListener {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
-    }
-
     companion object {
         /**
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.
          *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
          * @return A new instance of fragment FatHistoryFragment.
          */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance() =
             FatHistoryFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+                arguments = Bundle().apply {}
             }
-    }
-
-    fun measureBodyPart(view: View? = null) {
-        val measureIntent = Intent(activity, MeasureActivity::class.java)
-        measureIntent.putExtra(MEASUREMENT_POSITION, measurement.getNextMeasurePosition())
-        measureIntent.putExtra(MEASUREMENT_BUNDLE, measurement.writeToBundle())
-        startActivityForResult(measureIntent, MEASURE_REQUEST_CODE)
     }
 
     private fun subscribeToBodyFat() {
@@ -183,7 +126,7 @@ class FatHistoryFragment : Fragment() {
         subscribeToBodyFat()
         val cal = Calendar.getInstance()
         val endTime = cal.timeInMillis
-        cal.add(Calendar.WEEK_OF_YEAR, -1)
+        cal.add(Calendar.WEEK_OF_YEAR, -12)
         val startTime = cal.timeInMillis
 
         val dateFormat = getDateInstance()
@@ -195,23 +138,10 @@ class FatHistoryFragment : Fragment() {
             .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
             .build()
 
-        val response: Task<DataReadResponse> = Fitness.getHistoryClient(activity as Activity, account)
+        Fitness.getHistoryClient(activity as Activity, account)
             .readData(readRequest)
             .addOnSuccessListener { response -> bodyFatDataLoaded(response) }
             .addOnFailureListener { exception -> Log.e(TAG, "Data load failed: " + exception.message ) }
-
-        /*if (response. !is Task<DataReadResult>) return
-        val dataReadResult: DataReadResult = Tasks.await(response as Task<DataReadResult>)
-
-        //val response = Fitness.getHistoryClient(activity as Activity, account).readData(readRequest)
-        if (response.result == null) {
-            Log.i(TAG, "The Fitness API returned no dataSets for TYPE_BODY_FAT_PERCENTAGE")
-        } else {
-            val dataSets = response.result!!.dataSets
-            for (dataSet in dataSets) {
-                dumpDataSet(dataSet)
-            }
-        }*/
     }
 
     private fun bodyFatDataLoaded(response: DataReadResponse) {
@@ -281,7 +211,19 @@ class FatHistoryFragment : Fragment() {
         dataSeries.dataPointsRadius = 10.0f
         dataSeries.thickness = 7
         dataSeries.setAnimated(true)
-        dataSeries.setOnDataPointTapListener { _, dataPoint -> Log.d("dp", dataPoint.x.toString() + ", " + dataPoint.y.toString()) }
+        dataSeries.setOnDataPointTapListener { _, dataPoint -> if (listener != null) {
+                var foundReading: FatReading? = null
+                for (entry in fatHistory) {
+                    val tmpGvDp = GVDataPoint(Date(entry.date), entry.value.toDouble() * 100)
+                    if (tmpGvDp.x - 1e-5 <= dataPoint.x && dataPoint.x <= tmpGvDp.x + 1e-5 &&
+                        tmpGvDp.y - 1e-5 <= dataPoint.y && dataPoint.y <= tmpGvDp.y + 1e-5)
+                        foundReading = entry
+                }
+                if (foundReading != null) (listener as OnFatHistoryFragmentValueSelected).onFatHistoryValueSelected(
+                    foundReading
+                )
+            }
+            Log.d("dp", dataPoint.x.toString() + ", " + dataPoint.y.toString()) }
         if (fatGraph != null) {
             fatGraph.removeAllSeries()
             fatGraph.addSeries(dataSeries)
@@ -289,6 +231,10 @@ class FatHistoryFragment : Fragment() {
             fatGraph.viewport.setMinX(dataSeries.lowestValueX)
             fatGraph.viewport.setMaxX(dataSeries.highestValueX)
         }
+    }
+
+    override fun setFatMeasurementNow(fat: Float) {
+        saveBodyFat(fat)
     }
 
     private fun saveBodyFat(fatPercentage: Float) {
@@ -313,6 +259,66 @@ class FatHistoryFragment : Fragment() {
             .addOnSuccessListener { Log.i(TAG, "Data inserted: $dataSet") }
             .addOnFailureListener { exception -> Log.e(TAG, exception.message)
                 Log.e(TAG, "Unable to insert data: $dataSet") }
+            .addOnCanceledListener { Log.i(TAG, "saving data was cancelled.") }
+    }
+
+    fun deleteDataPoint(dataPoint: FatReading) {
+        val account = getAccount(activity as Context)
+        val cal = Calendar.getInstance()
+        cal.timeInMillis = dataPoint.date
+        cal.add(Calendar.MILLISECOND, 10)
+        val endTime = cal.timeInMillis
+        cal.add(Calendar.MILLISECOND, -20)
+        val startTime = cal.timeInMillis
+        val readRequest: DataReadRequest = DataReadRequest.Builder()
+            .read(DataType.TYPE_BODY_FAT_PERCENTAGE)
+            .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
+            .build()
+        Fitness.getHistoryClient(activity as Activity, account)
+            .readData(readRequest)
+            .addOnSuccessListener { response -> if (response.dataSets == null || response.dataSets.isEmpty()) {
+                    Log.e(TAG, "No entry found for this dataPoint")
+                } else {
+                    for (dataSet in response.dataSets) {
+                        dumpDataSet(dataSet)
+                        for (dp in dataSet.dataPoints) {
+                            var foundValue: Float? = null
+                            for (field in dp.dataType.fields) {
+                                if (field.name == "percentage") foundValue = dp.getValue(field).asFloat()
+                            }
+                            if (foundValue != null) {
+                                deleteVerifiedDataPoint(dataSet, dp, dataPoint)
+                            }
+                        }
+                    }
+                }
+            }
+            .addOnFailureListener { exception -> Log.e(TAG, "Data load failed: " + exception.message ) }
+    }
+
+    private fun deleteVerifiedDataPoint(dataSet: DataSet, dataPoint: DataPoint, fatReading: FatReading) {
+        val account = getAccount(activity as Context)
+        val deleteRequest :DataDeleteRequest = DataDeleteRequest.Builder()
+            .addDataType(dataPoint.dataType)
+            .addDataSource(dataSet.dataSource)
+            .setTimeInterval(
+                dataPoint.getStartTime(TimeUnit.MILLISECONDS),
+                dataPoint.getEndTime(TimeUnit.MILLISECONDS),
+                TimeUnit.MILLISECONDS)
+            .build()
+        Fitness.getHistoryClient(activity as Activity, account)
+            .deleteData(deleteRequest)
+            .addOnSuccessListener { Log.i(TAG, "Data deleted: $dataPoint")
+                for (entry in fatHistory) {
+                    if (entry.date == fatReading.date && entry.value == fatReading.value)
+                        fatHistory = fatHistory.subList(0, fatHistory.indexOf(entry)) +
+                                fatHistory.subList(fatHistory.indexOf(entry) + 1, fatHistory.count())
+                }
+                if (listener != null) listener!!.onFatHistoryValueSelected(null)
+                updateFatDiagram()
+                loadBodyFatData() }
+            .addOnFailureListener { exception -> Log.e(TAG, exception.message)
+                Log.e(TAG, "Unable to delete data: $dataPoint") }
             .addOnCanceledListener { Log.i(TAG, "saving data was cancelled.") }
     }
 }

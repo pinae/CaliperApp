@@ -48,7 +48,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@color/colorAccent"
+        android:background="@drawable/rounded_button"
         android:onClick="setDate"
         android:text="@string/save_birthday"
         app:layout_constraintEnd_toEndOf="parent"
