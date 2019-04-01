@@ -81,8 +81,10 @@ class MainActivity : AppCompatActivity(),
                     if (!supportFragmentManager.fragments.isEmpty() &&
                         getTopFragment() is TopFragment) {
                         val topFragment = getTopFragment() as TopFragment
-                        topFragment.setFatMeasurementNow(
-                            measurement.getFormula()(measurement.getSum(), age, prefs.sex) * 100)
+                        val fatPercentage = measurement.getFormula()(measurement.getSum(), age, prefs.sex) * 100
+                        topFragment.setFatMeasurementNow(fatPercentage)
+                        displayValue = FatReading(now.timeInMillis, fatPercentage)
+                        updateUI(account)
                     } else throw Exception("topFragment is missing!")
 
             }
