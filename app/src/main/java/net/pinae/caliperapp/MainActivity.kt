@@ -19,7 +19,7 @@ import java.util.*
 
 
 abstract class TopFragment: Fragment() {
-    abstract fun setFatMeasurementNow(fat :Float)
+    abstract fun setFatMeasurementNow(fatPercentage :Float)
 }
 
 
@@ -128,6 +128,7 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun measureBodyPart(view: View? = null) {
         val measureIntent = Intent(this, MeasureActivity::class.java)
         measureIntent.putExtra(MEASUREMENT_POSITION, measurement.getNextMeasurePosition())
@@ -169,6 +170,7 @@ class MainActivity : AppCompatActivity(),
         signIn()
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun deleteMeasurement(view: View?) {
         if (displayValue != null && getTopFragment() != null && getTopFragment() is FatHistoryFragment)
             (getTopFragment() as FatHistoryFragment).deleteDataPoint(displayValue!!)

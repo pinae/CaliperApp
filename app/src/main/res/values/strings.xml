@@ -1,14 +1,12 @@
 <resources>
     <string name="app_name">CaliperApp</string>
     <string name="measure_button">measure now</string>
-    <string name="thickness_input_hint">thickness in mm</string>
     <string name="save_measurement_button">Save measurement and continue</string>
-    <string name="ok">OK</string>
     <string name="you_need_to_log_in">You need to log into a Google account to use this app. It depends on the fitness
         store from the Google Fit API.</string>
     <string name="select_sex_text">Select ♂ if you have a lot of testosterone. Select ♀ if you are more the estrogen type.</string>
     <string name="select_male">♂</string>
-    <string name="select_birthday_explanation">This app uses your birthdate to calculate your age. The age is needed because the body fat ratio changes while aging.</string>
+    <string name="select_birthday_explanation">This app uses your birthday to calculate your age. The age is needed because the body fat ratio changes while aging.</string>
     <string name="select_birthday_heading">Please select your birthday:</string>
     <string name="save_birthday">save birthday</string>
     <string name="options_menu_set_sex">set sex</string>
@@ -22,7 +20,7 @@
         Press the caliper with two fingers of your second hand at the raised positions.
         You may release the fold with your first hand after the caliper maintains its shape.
         Increase the pressure until the caliper clicks into the catch.
-        Release the caliper and read the measurement fron the scale.</string>
+        Release the caliper and read the measurement from the scale.</string>
     <string name="expand_symbol">▼</string>
     <string name="collapse_symbol">▲</string>
     <string name="explanation_heading">Explanation:</string>
@@ -33,4 +31,5 @@
     <string name="display_value_caption">Measurement at %1$tF %1$tT:</string>
     <string name="select_female">♀</string>
     <string name="delete_this_measurement">delete this measurement</string>
+    <string name="year_edit_hint">Enter the year you are born in</string>
 </resources>

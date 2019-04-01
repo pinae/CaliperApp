@@ -2,10 +2,10 @@ package net.pinae.caliperapp
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import kotlinx.android.synthetic.main.fragment_not_logged_in.view.*
 
 
 class NotLoggedInFragment : TopFragment() {
@@ -20,7 +20,11 @@ class NotLoggedInFragment : TopFragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_not_logged_in, container, false)
+        val view = inflater.inflate(R.layout.fragment_not_logged_in, container, false)
+        view.logInToGoogleButton.setOnClickListener {
+            if (listener != null) listener!!.onGoogleLoginRequested()
+        }
+        return view
     }
 
     override fun onAttach(context: Context) {
@@ -50,10 +54,6 @@ class NotLoggedInFragment : TopFragment() {
                 arguments = Bundle().apply {
                 }
             }
-    }
-
-    fun logInToGoogle(view: View) {
-        if (listener != null) listener!!.onGoogleLoginRequested()
     }
 
     override fun setFatMeasurementNow(fatPercentage :Float) {

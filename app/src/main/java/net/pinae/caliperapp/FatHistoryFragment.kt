@@ -17,7 +17,6 @@ import com.google.android.gms.fitness.request.DataDeleteRequest
 import com.google.android.gms.fitness.request.DataReadRequest
 import kotlinx.android.synthetic.main.fragment_fat_history.*
 import kotlinx.android.synthetic.main.fragment_fat_history.view.*
-import java.text.DateFormat.getDateInstance
 import java.util.concurrent.TimeUnit
 import com.google.android.gms.fitness.result.DataReadResponse
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter

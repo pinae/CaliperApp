@@ -14,13 +14,12 @@
         android:text="@string/you_need_to_log_in" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/logInToGoogleButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:background="@drawable/rounded_button"
         android:drawableStart="@drawable/ic_google__g__logo"
-        android:onClick="logInToGoogle"
         android:text="@string/log_in_to_google"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
 

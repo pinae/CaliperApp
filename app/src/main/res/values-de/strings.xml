@@ -2,8 +2,6 @@
 <resources>
     <string name="app_name">CaliperApp</string>
     <string name="display_value_caption">Messung vom %1$td.%1$tm.%1$tY %1$tT:</string>
-    <string name="thickness_input_hint">Dicke in mm</string>
-    <string name="ok">OK</string>
     <string name="save_measurement_button">Speichere diesen Wert und fahre fort</string>
     <string name="select_female">♀</string>
     <string name="select_male">♂</string>
@@ -36,4 +34,5 @@
         da sie die Datenbank von Google Fit benutzt.</string>
     <string name="measure_button">neue Messung starten</string>
     <string name="delete_this_measurement">lösche diese Messung</string>
+    <string name="year_edit_hint">Gib hier das Jahr in dem du gebporen wurdest ein</string>
 </resources>

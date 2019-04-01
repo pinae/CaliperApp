@@ -6,29 +6,29 @@ import android.content.SharedPreferences
 import java.util.GregorianCalendar
 
 class SharedPreferencesWrapper(context: Context) {
-    private val PREFS_FILENAME = "net.pinae.caliperapp.prefs"
-    private val LOGIN_REJECTED = "login_rejected"
-    private val SEX = "sex"
-    private val BIRTHDAY = "birthday"
-    private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_FILENAME, 0)
+    private val prefsFilename = "net.pinae.caliperapp.prefs"
+    private val loginRejectedKey = "login_rejected"
+    private val sexKey = "sex"
+    private val birthdayKey = "birthday"
+    private val prefs: SharedPreferences = context.getSharedPreferences(prefsFilename, 0)
 
     var loginRejected: Boolean
-        get() = prefs.getBoolean(LOGIN_REJECTED, false)
-        set(value) = prefs.edit().putBoolean(LOGIN_REJECTED, value).apply()
+        get() = prefs.getBoolean(loginRejectedKey, false)
+        set(value) = prefs.edit().putBoolean(loginRejectedKey, value).apply()
 
     var sex: Int
-        get() = prefs.getInt(SEX, -1)
-        set(value) = prefs.edit().putInt(SEX, value).apply()
+        get() = prefs.getInt(sexKey, -1)
+        set(value) = prefs.edit().putInt(sexKey, value).apply()
 
     var birthday: GregorianCalendar
         get() {
             val tmpCal = GregorianCalendar()
-            tmpCal.timeInMillis = prefs.getLong(BIRTHDAY,
+            tmpCal.timeInMillis = prefs.getLong(birthdayKey,
                 GregorianCalendar(1870, 0, 1).timeInMillis)
             return tmpCal
         }
         set(value) {
-            prefs.edit().putLong(BIRTHDAY, value.timeInMillis).apply()
+            prefs.edit().putLong(birthdayKey, value.timeInMillis).apply()
         }
 }
 

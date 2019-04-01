@@ -60,6 +60,7 @@ class SelectBirthdayActivity : AppCompatActivity() {
         })
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun setDate(view: View) {
         prefs.birthday = selectedDate
         finish()
