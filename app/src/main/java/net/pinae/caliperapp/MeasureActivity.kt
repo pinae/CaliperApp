@@ -28,10 +28,10 @@ class MeasureActivity : AppCompatActivity() {
             Log.d("Measurement position", this.intent.getStringExtra(MEASUREMENT_POSITION))
             when (this.intent.getStringExtra(MEASUREMENT_POSITION)) {
                 BELLY -> measurementPositionImageView.setImageResource(R.drawable.ic_belly)
-                HIPS -> measurementPositionImageView.setImageResource(R.drawable.ic_armpit)
-                TRICEPS -> measurementPositionImageView.setImageResource(R.drawable.ic_belly)
+                HIPS -> measurementPositionImageView.setImageResource(R.drawable.ic_hips)
+                TRICEPS -> measurementPositionImageView.setImageResource(R.drawable.ic_triceps)
                 CHEST -> measurementPositionImageView.setImageResource(R.drawable.ic_chest)
-                TIGH -> measurementPositionImageView.setImageResource(R.drawable.ic_belly)
+                TIGH -> measurementPositionImageView.setImageResource(R.drawable.ic_tigh)
                 ARMPIT -> measurementPositionImageView.setImageResource(R.drawable.ic_armpit)
                 SCAPULA -> measurementPositionImageView.setImageResource(R.drawable.ic_scapula)
             }
