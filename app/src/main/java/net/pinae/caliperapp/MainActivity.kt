@@ -81,7 +81,8 @@ class MainActivity : AppCompatActivity(),
                     if (!supportFragmentManager.fragments.isEmpty() &&
                         getTopFragment() is TopFragment) {
                         val topFragment = getTopFragment() as TopFragment
-                        topFragment.setFatMeasurementNow(measurement.getFormula()(measurement.getSum(), age, prefs.sex))
+                        topFragment.setFatMeasurementNow(
+                            measurement.getFormula()(measurement.getSum(), age, prefs.sex) * 100)
                     } else throw Exception("topFragment is missing!")
 
             }
@@ -104,7 +105,7 @@ class MainActivity : AppCompatActivity(),
             measurementValue.visibility = View.GONE
         } else {
             measurementValueCaption.text = getString(R.string.display_value_caption, displayValue!!.date)
-            measurementValue.text = getString(R.string.display_value, displayValue!!.value * 100.0f)
+            measurementValue.text = getString(R.string.display_value, displayValue!!.value)
             measurementValueCaption.visibility = View.VISIBLE
             measurementValue.visibility = View.VISIBLE
         }

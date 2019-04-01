@@ -56,7 +56,7 @@ class NotLoggedInFragment : TopFragment() {
         if (listener != null) listener!!.onGoogleLoginRequested()
     }
 
-    override fun setFatMeasurementNow(fat :Float) {
+    override fun setFatMeasurementNow(fatPercentage :Float) {
 
     }
 }

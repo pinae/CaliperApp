@@ -128,16 +128,10 @@ class FatHistoryFragment : TopFragment() {
         val endTime = cal.timeInMillis
         cal.add(Calendar.WEEK_OF_YEAR, -12)
         val startTime = cal.timeInMillis
-
-        val dateFormat = getDateInstance()
-        Log.i(TAG, "Range Start: " + dateFormat.format(startTime))
-        Log.i(TAG, "Range End: " + dateFormat.format(endTime))
-
         val readRequest: DataReadRequest = DataReadRequest.Builder()
             .read(DataType.TYPE_BODY_FAT_PERCENTAGE)
             .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
             .build()
-
         Fitness.getHistoryClient(activity as Activity, account)
             .readData(readRequest)
             .addOnSuccessListener { response -> bodyFatDataLoaded(response) }
@@ -205,7 +199,7 @@ class FatHistoryFragment : TopFragment() {
         val dataSeries = LineGraphSeries<GVDataPoint>()
         for (entry in fatHistory) {
             Log.d("fatHistory entry", Date(entry.date).toString() + ": " + entry.value.toString())
-            dataSeries.appendData(GVDataPoint(Date(entry.date), entry.value.toDouble() * 100), true, 500)
+            dataSeries.appendData(GVDataPoint(Date(entry.date), entry.value.toDouble()), true, 500)
         }
         dataSeries.isDrawDataPoints = true
         dataSeries.dataPointsRadius = 10.0f
@@ -214,7 +208,7 @@ class FatHistoryFragment : TopFragment() {
         dataSeries.setOnDataPointTapListener { _, dataPoint -> if (listener != null) {
                 var foundReading: FatReading? = null
                 for (entry in fatHistory) {
-                    val tmpGvDp = GVDataPoint(Date(entry.date), entry.value.toDouble() * 100)
+                    val tmpGvDp = GVDataPoint(Date(entry.date), entry.value.toDouble())
                     if (tmpGvDp.x - 1e-5 <= dataPoint.x && dataPoint.x <= tmpGvDp.x + 1e-5 &&
                         tmpGvDp.y - 1e-5 <= dataPoint.y && dataPoint.y <= tmpGvDp.y + 1e-5)
                         foundReading = entry
