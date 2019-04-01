@@ -226,8 +226,8 @@ class FatHistoryFragment : TopFragment() {
         }
     }
 
-    override fun setFatMeasurementNow(fat: Float) {
-        saveBodyFat(fat)
+    override fun setFatMeasurementNow(fatPercentage: Float) {
+        saveBodyFat(fatPercentage)
     }
 
     private fun saveBodyFat(fatPercentage: Float) {
