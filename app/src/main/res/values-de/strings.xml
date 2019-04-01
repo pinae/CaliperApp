@@ -35,4 +35,5 @@
     <string name="measure_button">neue Messung starten</string>
     <string name="delete_this_measurement">lösche diese Messung</string>
     <string name="year_edit_hint">Gib hier das Jahr in dem du gebporen wurdest ein</string>
+    <string name="log_out_from_google">Bei Google abmelden</string>
 </resources>

@@ -34,17 +34,13 @@ class MainActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val gso: GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestScopes(Scope(Scopes.FITNESS_BODY_READ_WRITE))
-            .build()
-        client = GoogleSignIn.getClient(this, gso)
         newMeasurementButton.setOnClickListener { button -> measureBodyPart(button) }
     }
 
     override fun onResume() {
         super.onResume()
+        createClient()
         if ((getGoogleAccount() == null || getGoogleAccount()!!.id == null) && !prefs.loginRejected) signIn()
-        Log.d("onResume MA.account", account.toString())
         updateUI(getGoogleAccount())
     }
 
@@ -59,6 +55,20 @@ class MainActivity : AppCompatActivity(),
             when (item.itemId) {
                 R.id.action_set_sex -> startActivity(Intent(this, SelectSexActivity::class.java))
                 R.id.action_set_birthday -> startActivity(Intent(this, SelectBirthdayActivity::class.java))
+                R.id.action_logout -> {
+                    if (client != null) {
+                        client!!.signOut().addOnCompleteListener {
+                            client = null
+                            account = null
+                            updateUI(null)
+                        }
+                        client!!.revokeAccess().addOnCompleteListener {
+                            client = null
+                            account = null
+                            updateUI(null)
+                        }
+                    }
+                }
             }
         }
         return super.onOptionsItemSelected(item)
@@ -152,7 +162,15 @@ class MainActivity : AppCompatActivity(),
 
     }
 
+    private fun createClient() {
+        val gso: GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestScopes(Scope(Scopes.FITNESS_BODY_READ_WRITE))
+            .build()
+        client = GoogleSignIn.getClient(this, gso)
+    }
+
     private fun signIn() {
+        if (client == null) createClient()
         startActivityForResult(client!!.signInIntent, SIGN_IN_REQUEST_CODE)
     }
 

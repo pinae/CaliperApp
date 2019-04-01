@@ -21,9 +21,7 @@ class NotLoggedInFragment : TopFragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_not_logged_in, container, false)
-        view.logInToGoogleButton.setOnClickListener {
-            if (listener != null) listener!!.onGoogleLoginRequested()
-        }
+        view.logInToGoogleButton.setOnClickListener { requestLogin() }
         return view
     }
 
@@ -54,6 +52,10 @@ class NotLoggedInFragment : TopFragment() {
                 arguments = Bundle().apply {
                 }
             }
+    }
+
+    private fun requestLogin() {
+        if (this.listener != null) this.listener!!.onGoogleLoginRequested()
     }
 
     override fun setFatMeasurementNow(fatPercentage :Float) {
