@@ -26,7 +26,6 @@ abstract class TopFragment: Fragment() {
 class MainActivity : AppCompatActivity(),
     FatHistoryFragment.OnFatHistoryFragmentValueSelected,
     NotLoggedInFragment.OnLoginRequestByClick {
-    private var client: GoogleSignInClient? = null
     private var account: GoogleSignInAccount? = null
     private val measurement: Measurement = Measurement()
     private var displayValue: FatReading? = null
@@ -56,17 +55,14 @@ class MainActivity : AppCompatActivity(),
                 R.id.action_set_sex -> startActivity(Intent(this, SelectSexActivity::class.java))
                 R.id.action_set_birthday -> startActivity(Intent(this, SelectBirthdayActivity::class.java))
                 R.id.action_logout -> {
-                    if (client != null) {
-                        client!!.signOut().addOnCompleteListener {
-                            client = null
-                            account = null
-                            updateUI(null)
-                        }
-                        client!!.revokeAccess().addOnCompleteListener {
-                            client = null
-                            account = null
-                            updateUI(null)
-                        }
+                    val client :GoogleSignInClient = createClient()
+                    client.signOut().addOnCompleteListener {
+                        account = null
+                        updateUI(account)
+                    }
+                    client.revokeAccess().addOnCompleteListener {
+                        account = null
+                        updateUI(account)
                     }
                 }
             }
@@ -162,16 +158,16 @@ class MainActivity : AppCompatActivity(),
 
     }
 
-    private fun createClient() {
+    private fun createClient() :GoogleSignInClient {
         val gso: GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestScopes(Scope(Scopes.FITNESS_BODY_READ_WRITE))
             .build()
-        client = GoogleSignIn.getClient(this, gso)
+        return GoogleSignIn.getClient(this, gso)
     }
 
     private fun signIn() {
-        if (client == null) createClient()
-        startActivityForResult(client!!.signInIntent, SIGN_IN_REQUEST_CODE)
+        val client :GoogleSignInClient = createClient()
+        startActivityForResult(client.signInIntent, SIGN_IN_REQUEST_CODE)
     }
 
     private fun getGoogleAccount():GoogleSignInAccount? {
