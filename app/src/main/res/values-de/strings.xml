@@ -3,6 +3,7 @@
     <string name="app_name">CaliperApp</string>
     <string name="display_value_caption">Messung vom %1$td.%1$tm.%1$tY %1$tT:</string>
     <string name="save_measurement_button">Speichere diesen Wert und fahre fort</string>
+    <string name="stop_measuring_with_this_value">Beende die Messung mit diesem Wert</string>
     <string name="select_female">♀</string>
     <string name="select_male">♂</string>
     <string name="select_birthday_explanation">Die App nutzt deinen Geburtstag, um dein Alter zu berechnen.
@@ -12,7 +13,6 @@
     <string name="options_menu_set_sex">Geschlecht setzen</string>
     <string name="options_menu_set_birthday">Geburtstag setzen</string>
     <string name="value_is_not_a_number">Fehler: Bitte gib eine Zahl ein.</string>
-    <string name="stop_measuring_with_this_value">Ende die Messung mit diesem Wert</string>
     <string name="enter_the_measurement_as_a_decimal_number">Gib den Messwert als Dezimalzahl ein.</string>
     <string name="caliper_explanation_text">Setze den Läufer auf der Skala zurück zum Maximum.
         Klemme die Speckfalte zwischen Daumen und Zeigefinger ein.
