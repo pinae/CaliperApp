@@ -32,9 +32,7 @@ class SharedPreferencesWrapper(context: Context) {
         }
 }
 
-val prefs: SharedPreferencesWrapper by lazy {
-    PreferencedApplication.sharedPreferences!!
-}
+val prefs: SharedPreferencesWrapper = PreferencedApplication.sharedPreferences!!
 
 class PreferencedApplication: Application() {
     companion object {
