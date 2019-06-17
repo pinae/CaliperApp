@@ -1,9 +1,14 @@
 package net.pinae.caliperapp
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
+import android.content.pm.PackageManager
+import android.os.*
 import android.support.v7.app.AppCompatActivity
-import android.os.Bundle
 import android.util.Log
 import android.support.v4.app.Fragment
 import android.view.Menu
@@ -29,6 +34,48 @@ class MainActivity : AppCompatActivity(),
     private var account: GoogleSignInAccount? = null
     private val measurement: Measurement = Measurement()
     private var displayValue: FatReading? = null
+    var pinytoServiceMessenger: Messenger? = null
+    var pinytoServiceIsBound: Boolean = false
+    var pinytoServiceReady: Boolean = false
+
+    private val pinytoServiceConnection = object: ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            pinytoServiceMessenger = Messenger(service)
+            pinytoServiceIsBound = true
+            checkPinyto()
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            pinytoServiceMessenger = null
+            pinytoServiceIsBound = false
+        }
+    }
+
+    @SuppressLint("HandlerLeak")
+    inner class MessagesFromPinytoServiceHandler: Handler() {
+        override fun handleMessage(msg: Message?) {
+            super.handleMessage(msg)
+            if (msg == null) return
+            val data = msg.data
+            if (!data.containsKey("tag")) {
+                Log.e(this@MainActivity.localClassName, "Answering messages to the need to have a tag!")
+                return
+            }
+            when (data.getString("tag")) {
+                "checkPinyto" -> {
+                    Log.i(this@MainActivity.localClassName, "checkPinyto received.")
+                    if (!data.containsKey("pinytoReady")) {
+                        Log.e(this@MainActivity.localClassName, "The answer contains no key \"pinytoReady\".")
+                        return
+                    }
+                    Log.i("checkPinytoAnswer", data.getBoolean("pinytoReady").toString())
+                    pinytoServiceReady = data.getBoolean("pinytoReady")
+                }
+            }
+        }
+    }
+
+    private val pinytoServiceReturnMessenger = Messenger(MessagesFromPinytoServiceHandler())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +86,7 @@ class MainActivity : AppCompatActivity(),
     override fun onResume() {
         super.onResume()
         createClient()
+        bindToPinytoConnect()
         if ((getGoogleAccount() == null || getGoogleAccount()!!.id == null) && !prefs.loginRejected) signIn()
         updateUI(getGoogleAccount())
     }
@@ -188,5 +236,47 @@ class MainActivity : AppCompatActivity(),
     fun deleteMeasurement(view: View?) {
         if (displayValue != null && getTopFragment() != null && getTopFragment() is FatHistoryFragment)
             (getTopFragment() as FatHistoryFragment).deleteDataPoint(displayValue!!)
+    }
+
+    private fun isAppInstalled(packageName: String): Boolean {
+        return try {
+            packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
+            true
+        } catch (e: PackageManager.NameNotFoundException) {
+            false
+        }
+    }
+
+    private fun bindToPinytoConnect() {
+        val appName = "de.pinyto.pinyto_connect"
+        if (isAppInstalled(appName)) {
+            val bindPinytoServiceIntent = Intent("$appName.BIND")
+            bindPinytoServiceIntent.setPackage(appName)
+            bindPinytoServiceIntent.component = ComponentName(
+                appName,
+                "$appName.PinytoService"
+            )
+            bindService(bindPinytoServiceIntent, pinytoServiceConnection, Context.BIND_AUTO_CREATE)
+        }
+    }
+
+    private fun createAnswerBundle(tag: String): Bundle {
+        val bundle = Bundle()
+        bundle.putString("tag", tag)
+        bundle.putBinder("answerBinder", pinytoServiceReturnMessenger.binder)
+        return bundle
+    }
+
+    private fun checkPinyto() {
+        if (!pinytoServiceIsBound) return
+        val msg = Message.obtain()
+        val bundle = createAnswerBundle("checkPinyto")
+        bundle.putString("path", "#check_pinyto")
+        msg.data = bundle
+        try {
+            pinytoServiceMessenger?.send(msg)
+        } catch (e: RemoteException) {
+            e.printStackTrace()
+        }
     }
 }

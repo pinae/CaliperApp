@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.pinae.caliperapp">
 
+    <uses-permission android:name="pinyto.permission.CLOUD"/>
+
     <application
         android:name=".PreferencedApplication"
         android:allowBackup="true"
