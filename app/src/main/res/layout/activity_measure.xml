@@ -98,7 +98,9 @@
             android:autofillHints="@string/enter_the_measurement_as_a_decimal_number"
             android:focusable="auto"
             android:hint="@string/enter_the_measurement_as_a_decimal_number"
-            android:inputType="numberDecimal" />
+            android:inputType="numberDecimal">
+            <requestFocus />
+        </EditText>
 
         <Button
             android:id="@+id/continueMeasurementButton"

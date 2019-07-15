@@ -125,7 +125,7 @@ class FatHistoryFragment : TopFragment() {
         subscribeToBodyFat()
         val cal = Calendar.getInstance()
         val endTime = cal.timeInMillis
-        cal.add(Calendar.WEEK_OF_YEAR, -12)
+        cal.add(Calendar.YEAR, -10)
         val startTime = cal.timeInMillis
         val readRequest: DataReadRequest = DataReadRequest.Builder()
             .read(DataType.TYPE_BODY_FAT_PERCENTAGE)
@@ -219,10 +219,10 @@ class FatHistoryFragment : TopFragment() {
             Log.d("dp", dataPoint.x.toString() + ", " + dataPoint.y.toString()) }
         if (fatGraph != null) {
             fatGraph.removeAllSeries()
-            fatGraph.addSeries(dataSeries)
             fatGraph.viewport.isXAxisBoundsManual = true
             fatGraph.viewport.setMinX(dataSeries.lowestValueX)
             fatGraph.viewport.setMaxX(dataSeries.highestValueX)
+            fatGraph.addSeries(dataSeries)
         }
     }
 
